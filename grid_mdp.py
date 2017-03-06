@@ -1,0 +1,64 @@
+import numpy
+import random
+
+class Grid_Mdp:
+
+    def __int__(self):
+        #states
+        self.states                      =  [1,2,3,4,5,6,7,8]
+        self.terminal_states       = dict()
+        self.terminal_states[6]  = 1
+        self.terminal_states[7]  = 1
+        self.terminal_states[8]  = 1
+
+        #actions
+        self.actions       = ['n', 'e', 's', 'w']
+
+        #rewards
+        self.rewards     = dict()
+        self.rewards['1_s']      = -1.0
+        self.rewards['3_s']      = 1.0
+        self.rewards['5_s']      = -1.0
+
+        #transform
+        self.t               = dict()
+        self.t['1_s']      = 6
+        self.t['1_e']      = 2
+        self.t['2_w']     = 1
+        self.t['2_e']      = 3
+        self.t['3_w']     = 2
+        self.t['3_s']      = 7
+        self.t['3_e']      = 4
+        self.t['4_w']     = 3
+        self.t['4_e']      = 5
+        self.t['5_w']     = 4
+        self.t['5_s']      = 8
+
+        # discounts
+        self.gamma = 0.8
+
+    # transform function
+    # return: is_terminal, next_state, reward
+    def transform(self, state, action):
+        if state in self.terminal_states:
+            return True, state, 0
+
+        key = '%d_%s'%(state, action)
+        if key in self.t:
+            next_state = self.t[key]
+        else:
+            next_state = state
+
+        is_terminal = False
+        if next_state in self.terminal_states:
+            is_terminal = True
+
+        if key not in self.rewards:
+            r = 0.0
+        else:
+            r = self.rewards[key]
+
+        return is_terminal, next_state, r
+
+
+
